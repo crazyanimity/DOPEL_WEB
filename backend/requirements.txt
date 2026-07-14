@@ -3,7 +3,7 @@ uvicorn[standard]
 python-multipart
 pandas
 scikit-learn
-
+scipy
 groq
 sqlalchemy
 psycopg2-binary
