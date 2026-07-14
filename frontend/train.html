@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Train your Dopel</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+    body { background-color: #09090B; color: #e5e1e4; font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+    .glass-card {
+        background: rgba(17, 17, 17, 0.8);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .reveal-on-scroll { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+    .reveal-on-scroll.visible { opacity: 1; transform: translateY(0); }
+    .locked { filter: blur(4px); pointer-events: none; user-select: none; }
+</style>
+</head>
+<body class="min-h-screen">
+
+<nav class="fixed top-0 w-full z-50 bg-black/60 backdrop-blur-xl border-b border-white/10 h-16 flex items-center px-6 justify-between">
+    <div class="font-bold tracking-tighter">Dopel</div>
+    <div class="text-sm text-white/60">Signed in as <span id="navName" class="text-white font-medium"></span> · <span id="navPlan" class="text-[#6366F1] font-medium"></span></div>
+</nav>
+
+<!-- SECTION 1: Upload -->
+<section class="min-h-screen flex items-center justify-center px-6 pt-16">
+<div class="glass-card w-full max-w-lg rounded-2xl p-8">
+
+    <div id="uploadStep">
+        <h1 class="text-2xl font-bold mb-1">Train your Dopel</h1>
+        <p id="planSubtitle" class="text-white/60 text-sm mb-6"></p>
+
+        <div id="trainError" class="hidden mb-4 text-sm px-4 py-3 rounded-lg bg-red-900/30 text-red-300 border border-red-800"></div>
+
+        <form id="trainForm" onsubmit="return handleTrainSubmit(event)" class="flex flex-col gap-4">
+            <div>
+                <label class="block text-xs text-white/60 mb-1.5">WhatsApp chat export files (.txt) — upload as many as you like</label>
+                <input id="chatFiles" type="file" accept=".txt" multiple
+                    class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white file:mr-4 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-[#6366F1] file:text-white file:font-semibold file:cursor-pointer"/>
+                <p id="fileCount" class="text-xs text-white/40 mt-2">No files selected yet.</p>
+                <div id="contactList" class="flex flex-col gap-2 mt-3"></div>
+                <p class="text-xs text-white/40 mt-2">We'll look for messages sent by <strong id="yourNameHint"></strong> — make sure that matches the name in your account exactly.</p>
+            </div>
+            <button type="submit" class="w-full py-4 bg-[#6366F1] text-white rounded-xl font-bold hover:opacity-90 active:scale-95 transition-all">Start training</button>
+        </form>
+    </div>
+
+    <div id="progressStep" class="hidden flex-col items-center justify-center py-10 text-center gap-4">
+        <div class="w-10 h-10 border-4 border-white/20 border-t-[#6366F1] rounded-full animate-spin"></div>
+        <p id="progressText" class="text-white/70">Calibrating your Dopel on the uploaded chats…</p>
+        <p class="text-xs text-white/40">This runs on the server — usually a few seconds for Quick Mode, a bit longer for Smart Mode.</p>
+    </div>
+
+    <div id="readyStep" class="hidden flex-col items-center justify-center py-10 text-center gap-3">
+        <div class="text-3xl">✅</div>
+        <p class="text-white font-semibold">Calibration complete — <span id="pairsTrainedText"></span></p>
+        <p class="text-white/60 text-sm">Trained on chats with: <span id="contactsTrainedText" class="text-white"></span></p>
+        <p class="text-white/60 text-sm">Scroll down to start talking to your Dopel.</p>
+        <span class="text-2xl animate-bounce">↓</span>
+    </div>
+
+</div>
+</section>
+
+<!-- SECTION 2: Chat (unlocks once training is ready) -->
+<section class="min-h-screen flex items-center justify-center px-6 py-20">
+<div id="chatSection" class="glass-card w-full max-w-lg rounded-2xl p-6 flex flex-col locked reveal-on-scroll" style="height: 70vh;">
+    <div class="flex items-center gap-3 pb-4 border-b border-white/10 mb-4">
+        <div class="w-10 h-10 rounded-full bg-[#6366F1] flex items-center justify-center font-bold" id="chatAvatar">D</div>
+        <div class="flex-1">
+            <div class="font-semibold" id="chatHeaderName">Waiting for training to finish…</div>
+            <div class="text-xs text-white/50" id="chatHeaderMode"></div>
+        </div>
+    </div>
+    <div id="chatMessages" class="flex-1 overflow-y-auto flex flex-col gap-3 pr-1"></div>
+    <form onsubmit="return handleChatSubmit(event)" class="flex gap-2 mt-4">
+        <input id="chatInput" type="text" placeholder="Type a message…" autocomplete="off"
+            class="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:border-[#6366F1]"/>
+        <button type="submit" class="bg-[#6366F1] text-white px-5 py-3 rounded-lg font-semibold hover:opacity-90 active:scale-95 transition-all">Send</button>
+    </form>
+</div>
+</section>
+
+<script src="shared.js"></script>
+<script>
+    if (!requireAuth()) { throw new Error("Not authenticated"); }
+
+    const params = new URLSearchParams(window.location.search);
+    const plan = params.get('plan') === 'smart' ? 'smart' : 'quick';
+
+    document.getElementById('navName').textContent = getUserName();
+    document.getElementById('navPlan').textContent = plan === 'smart' ? 'Smart Mode' : 'Quick Mode';
+    document.getElementById('yourNameHint').textContent = getUserName();
+    document.getElementById('planSubtitle').textContent = plan === 'smart'
+        ? 'Smart Mode: deep, context-aware replies generated fresh each time.'
+        : 'Quick Mode: instant, lightweight replies based on your past texts.';
+
+    let selectedFiles = []; // accumulates across multiple "Choose Files" picks
+
+    function inferContactName(filename) {
+        const stem = filename.replace(/\.txt$/i, '').trim();
+        const match = stem.match(/whatsapp chat with (.+)/i);
+        let name = match ? match[1].trim() : stem;
+        name = name.replace(/[^\w\s.'-]+$/, '').trim();
+        return name || 'Unknown contact';
+    }
+
+    function renderFileList() {
+        const n = selectedFiles.length;
+        document.getElementById('fileCount').textContent = n ? `${n} file${n > 1 ? 's' : ''} selected.` : 'No files selected yet.';
+
+        const list = document.getElementById('contactList');
+        list.innerHTML = '';
+        selectedFiles.forEach((file, i) => {
+            const row = document.createElement('div');
+            row.className = 'flex items-center gap-2';
+            row.innerHTML = `
+                <span class="text-xs text-white/40 flex-shrink-0 truncate max-w-[35%]">${file.name}</span>
+                <span class="text-white/30">→</span>
+                <input data-file-index="${i}" class="contact-name-input flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white" value="${inferContactName(file.name)}" placeholder="Contact name"/>
+                <button type="button" data-remove-index="${i}" class="remove-file-btn text-white/40 hover:text-red-400 text-lg leading-none px-1" title="Remove">×</button>
+            `;
+            list.appendChild(row);
+        });
+
+        document.querySelectorAll('.remove-file-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const idx = parseInt(btn.dataset.removeIndex, 10);
+                selectedFiles.splice(idx, 1);
+                renderFileList();
+            });
+        });
+    }
+
+    document.getElementById('chatFiles').addEventListener('change', (e) => {
+        const newFiles = Array.from(e.target.files);
+        // Skip exact duplicates (same name + size) so re-picking the same file twice doesn't double it up.
+        newFiles.forEach(f => {
+            const isDup = selectedFiles.some(existing => existing.name === f.name && existing.size === f.size);
+            if (!isDup) selectedFiles.push(f);
+        });
+        e.target.value = ''; // reset so picking the exact same file again still fires 'change'
+        renderFileList();
+    });
+
+    function showStep(step) {
+        ['uploadStep', 'progressStep', 'readyStep'].forEach(id => {
+            document.getElementById(id).classList.toggle('hidden', id !== step);
+        });
+        if (step !== 'uploadStep') document.getElementById('progressStep').classList.toggle('flex', step === 'progressStep');
+        if (step === 'readyStep') document.getElementById('readyStep').classList.add('flex');
+    }
+
+    function showTrainError(msg) {
+        const el = document.getElementById('trainError');
+        el.textContent = msg;
+        el.classList.remove('hidden');
+    }
+
+    async function handleTrainSubmit(event) {
+        event.preventDefault();
+        if (!selectedFiles.length) { showTrainError('Select at least one .txt chat export first.'); return false; }
+
+        const contactInputs = document.querySelectorAll('.contact-name-input');
+        const formData = new FormData();
+        selectedFiles.forEach((file, i) => {
+            formData.append('files', file);
+            const contactName = contactInputs[i] ? contactInputs[i].value.trim() : '';
+            formData.append('contact_names', contactName || 'Unknown contact');
+        });
+        formData.append('plan', plan);
+
+        showStep('progressStep');
+
+        try {
+            const res = await authFetch('/train', { method: 'POST', body: formData });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) {
+                showStep('uploadStep');
+                showTrainError(data.detail || 'Training failed to start. Check the file format and try again.');
+                return false;
+            }
+            pollStatus();
+        } catch (err) {
+            showStep('uploadStep');
+            showTrainError('Could not reach the training server.');
+        }
+        return false;
+    }
+
+    function pollStatus() {
+        const interval = setInterval(async () => {
+            try {
+                const res = await authFetch(`/persona/${plan}/status`);
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) return;
+
+                if (data.status === 'ready') {
+                    clearInterval(interval);
+                    showStep('readyStep');
+                    unlockChat(data.pairs_trained, data.contacts);
+                } else if (data.status === 'error') {
+                    clearInterval(interval);
+                    showStep('uploadStep');
+                    showTrainError(data.error_message || 'Training failed. Please try again.');
+                }
+                // else still "training" — keep polling
+            } catch (err) {
+                // transient network hiccup — keep polling, don't kill the loop
+            }
+        }, 2000);
+    }
+
+    function unlockChat(pairsTrained, contacts) {
+        contacts = contacts || [];
+        document.getElementById('pairsTrainedText').textContent = `trained on ${pairsTrained} of your real replies`;
+        document.getElementById('contactsTrainedText').textContent = contacts.join(', ') || '—';
+
+        const chatSection = document.getElementById('chatSection');
+        chatSection.classList.remove('locked');
+        document.getElementById('chatHeaderName').textContent = `You're now talking to ${getUserName()}`;
+        document.getElementById('chatHeaderMode').textContent = plan === 'smart' ? 'Smart Mode' : 'Quick Mode';
+        document.getElementById('chatAvatar').textContent = (getUserName().charAt(0) || 'D').toUpperCase();
+
+        if (document.getElementById('chatMessages').children.length === 0) {
+            addChatBubble('assistant', `Calibration done. Say something below to try it out.`);
+        }
+    }
+
+    function addChatBubble(role, text) {
+        const wrap = document.createElement('div');
+        wrap.className = role === 'user' ? 'self-end max-w-[80%]' : 'self-start max-w-[80%]';
+        const bubble = document.createElement('div');
+        bubble.className = role === 'user'
+            ? 'bg-[#6366F1] text-white rounded-2xl rounded-br-sm px-4 py-2.5 text-sm'
+            : 'glass-card border border-white/10 rounded-2xl rounded-bl-sm px-4 py-2.5 text-sm';
+        bubble.textContent = text;
+        wrap.appendChild(bubble);
+        document.getElementById('chatMessages').appendChild(wrap);
+        document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+    }
+
+    async function handleChatSubmit(event) {
+        event.preventDefault();
+        if (document.getElementById('chatSection').classList.contains('locked')) return false;
+
+        const input = document.getElementById('chatInput');
+        const message = input.value.trim();
+        if (!message) return false;
+
+        addChatBubble('user', message);
+        input.value = '';
+
+        try {
+            const res = await authFetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message, plan }),
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) {
+                addChatBubble('assistant', `⚠️ ${data.detail || 'Something went wrong.'}`);
+                return false;
+            }
+            addChatBubble('assistant', data.reply);
+        } catch (err) {
+            addChatBubble('assistant', '⚠️ Could not reach the server.');
+        }
+        return false;
+    }
+
+    // Reveal the chat card as it scrolls into view (once unlocked it's also visible, not just revealed).
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.15 });
+    observer.observe(document.getElementById('chatSection'));
+
+    // If this persona is already trained from a previous visit, skip straight to ready.
+    (async function checkExistingStatus() {
+        try {
+            const res = await authFetch(`/persona/${plan}/status`);
+            if (res.ok) {
+                const data = await res.json();
+                if (data.status === 'ready') { showStep('readyStep'); unlockChat(data.pairs_trained, data.contacts); }
+                else if (data.status === 'training') { showStep('progressStep'); pollStatus(); }
+            }
+        } catch (err) { /* no existing persona yet — stay on upload step */ }
+    })();
+</script>
+</body>
+</html>

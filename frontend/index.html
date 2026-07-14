@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dopel — Your Digital You</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "secondary": "#b8c4ff",
+                "on-secondary-fixed-variant": "#334282",
+                "on-primary-fixed-variant": "#2f2ebe",
+                "error-container": "#93000a",
+                "on-primary": "#1000a9",
+                "on-error-container": "#ffdad6",
+                "on-error": "#690005",
+                "tertiary-fixed-dim": "#c4c1fb",
+                "on-primary-fixed": "#07006c",
+                "on-tertiary-fixed-variant": "#444173",
+                "surface-variant": "#353437",
+                "primary-fixed-dim": "#c0c1ff",
+                "secondary-container": "#334282",
+                "primary": "#c0c1ff",
+                "on-primary-container": "#0d0096",
+                "secondary-fixed": "#dde1ff",
+                "error": "#ffb4ab",
+                "primary-fixed": "#e1e0ff",
+                "outline-variant": "#464554",
+                "on-secondary": "#1a2b6a",
+                "on-tertiary": "#2d2a5b",
+                "outline": "#908fa0",
+                "surface-tint": "#c0c1ff",
+                "surface-container": "#201f22",
+                "surface-container-lowest": "#0e0e10",
+                "on-surface": "#e5e1e4",
+                "surface-container-low": "#1c1b1d",
+                "surface-bright": "#39393b",
+                "secondary-fixed-dim": "#b8c4ff",
+                "surface-container-high": "#2a2a2c",
+                "surface-dim": "#131315",
+                "inverse-surface": "#e5e1e4",
+                "inverse-on-surface": "#313032",
+                "on-background": "#e5e1e4",
+                "on-surface-variant": "#c7c4d7",
+                "on-tertiary-container": "#262354",
+                "inverse-primary": "#494bd6",
+                "tertiary-fixed": "#e3dfff",
+                "surface-container-highest": "#353437",
+                "tertiary": "#c4c1fb",
+                "tertiary-container": "#8e8bc2",
+                "primary-container": "#8083ff",
+                "on-tertiary-fixed": "#181445",
+                "on-secondary-container": "#a2b1f9",
+                "surface": "#131315",
+                "on-secondary-fixed": "#001354",
+                "background": "#131315"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "margin-mobile": "20px",
+                "section-gap": "120px",
+                "margin-desktop": "64px",
+                "gutter": "24px",
+                "base": "8px",
+                "container-max": "1280px"
+            },
+            "fontFamily": {
+                "headline-xl": ["Inter"],
+                "body-md": ["Inter"],
+                "display-lg-mobile": ["Inter"],
+                "headline-lg": ["Inter"],
+                "display-lg": ["Inter"],
+                "body-lg": ["Inter"],
+                "label-md": ["Inter"],
+                "label-sm": ["Inter"]
+            },
+            "fontSize": {
+                "headline-xl": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                "body-md": ["16px", {"lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400"}],
+                "display-lg-mobile": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "headline-lg": ["32px", {"lineHeight": "1.3", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                "display-lg": ["72px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+                "body-lg": ["18px", {"lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400"}],
+                "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                "label-sm": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.08em", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #09090B;
+            color: #e5e1e4;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(17, 17, 17, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease-out;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.2);
+        }
+
+        .primary-glow {
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .text-reveal {
+            background: linear-gradient(to right, #fff 20%, #444 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: shine 5s linear infinite;
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        .timeline-line {
+            background: linear-gradient(to bottom, #6366F1 0%, transparent 100%);
+        }
+
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .reveal-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-background/80 dark:bg-background/80 backdrop-blur-xl border-b border-white/10 h-20">
+<div class="max-w-container-max mx-auto px-margin-desktop flex justify-between items-center h-full">
+<div class="font-headline-lg text-headline-lg font-bold tracking-tighter text-on-surface dark:text-on-surface">Dopel</div>
+<div class="hidden md:flex gap-gutter items-center">
+<a class="text-primary font-semibold border-b-2 border-primary pb-1" href="#">Features</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">Intelligence</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">Pricing</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">About</a>
+</div>
+<button onclick="openAuthModal()" class="js-get-started bg-[#6366F1] text-white px-6 py-2 rounded-full font-semibold hover:opacity-90 active:scale-95 transition-all primary-glow">
+                Get Started
+            </button>
+</div>
+</nav>
+<main>
+<!-- SECTION 1: Hero -->
+<section class="relative min-h-screen flex items-center pt-20">
+<!-- STITCH_SHADER_START:ANIMATION_2 class="absolute inset-0 w-full h-full -z-10" -->
+<div class="absolute inset-0 w-full h-full -z-10" style="display:block;">
+<canvas id="shader-canvas-ANIMATION_2" style="display:block;width:100%;height:100%"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_2');
+
+  function syncSize() {
+    const w = canvas.clientWidth  || 1280;
+    const h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w;
+      canvas.height = h;
+    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(syncSize).observe(canvas);
+  }
+  syncSize();
+
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position;
+varying vec2 v_texCoord;
+void main() {
+  v_texCoord = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+  const fs = `precision highp float;
+uniform float u_time;
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+varying vec2 v_texCoord;
+
+float noise(vec2 p) {
+    return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+}
+
+void main() {
+    vec2 uv = v_texCoord;
+    vec2 mouse = u_mouse / u_resolution;
+    
+    vec3 color = vec3(0.035, 0.035, 0.043);
+    
+    float t = u_time * 0.2;
+    for(float i = 1.0; i < 4.0; i++) {
+        uv.x += 0.1 * sin(t * i + uv.y * 2.0);
+        uv.y += 0.1 * cos(t * i + uv.x * 2.0);
+        
+        float dist = length(uv - vec2(0.5 + 0.2 * sin(t), 0.5 + 0.2 * cos(t)));
+        float glow = 0.05 / (dist + 0.1);
+        
+        vec3 auroraColor = vec3(0.388, 0.4, 0.945) * glow * (1.0 / i);
+        color += auroraColor * 0.3;
+    }
+    
+    float mouseGlow = 0.02 / (length(v_texCoord - mouse) + 0.1);
+    color += vec3(0.388, 0.4, 0.945) * mouseGlow * 0.2;
+
+    gl_FragColor = vec4(color, 1.0);
+}`;
+  function cs(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const nx = (event.clientX - rect.left) / rect.width;
+      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
+      mouse.x = nx * canvas.width;
+      mouse.y = ny * canvas.height;
+    }
+  });
+
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+</script>
+</div>
+<!-- STITCH_SHADER_END:ANIMATION_2 -->
+<div class="max-w-container-max mx-auto px-margin-desktop w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+<div class="z-10">
+<span class="inline-block px-3 py-1 mb-6 text-label-sm uppercase tracking-widest bg-[#6366F1]/10 text-[#6366F1] border border-[#6366F1]/20 rounded-full">AI Personality Learning</span>
+<h1 class="font-display-lg text-display-lg mb-4 text-white leading-tight">Dopel</h1>
+<h2 class="font-headline-xl text-headline-xl mb-6 text-[#6366F1]">Your Digital You.</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-10 max-w-lg">
+                        An AI that learns exactly how you text and replies just like you whenever you're unavailable. Seamlessly bridge the gap between presence and absence.
+                    </p>
+<div class="flex flex-wrap gap-4">
+<button onclick="openAuthModal()" class="js-get-started px-8 py-4 bg-[#6366F1] text-white rounded-xl font-bold text-lg primary-glow hover:scale-105 active:scale-95 transition-all">Get Started</button>
+<button class="px-8 py-4 glass-card text-white rounded-xl font-bold text-lg border border-white/10 hover:bg-white/5 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined">play_circle</span> Watch Demo
+                        </button>
+</div>
+</div>
+<div class="relative h-[500px] lg:h-[600px] w-full flex justify-center items-center">
+<!-- STITCH_THREEJS_START:ANIMATION_3 class="w-full h-full" -->
+<div class="w-full h-full" style="display:block;">
+<script src="https://ajax.googleapis.com/ajax/libs/threejs/r125/three.min.js"></script>
+<div id="threejs-container-ANIMATION_3" style="width:100%;height:100%"></div>
+<script>
+(function() {
+  const container = document.getElementById('threejs-container-ANIMATION_3');
+  const devicePixelRatio = window.devicePixelRatio || 1;
+  const width = container.clientWidth || window.innerWidth;
+const height = container.clientHeight || window.innerHeight;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+camera.position.z = 2.5;
+
+const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+renderer.setSize(width, height);
+renderer.setPixelRatio(window.device_ratio || 1);
+container.appendChild(renderer.domElement);
+
+const geometry = new THREE.SphereGeometry(1, 128, 128);
+
+const vertexShader = `
+    varying vec2 vUv;
+    varying vec3 vNormal;
+    uniform float uTime;
+    
+    void main() {
+        vUv = uv;
+        vNormal = normal;
+        
+        vec3 pos = position;
+        float noise = sin(pos.x * 3.0 + uTime) * cos(pos.y * 3.0 + uTime) * 0.1;
+        pos += normal * noise;
+        
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+    }
+`;
+
+const fragmentShader = `
+    varying vec2 vUv;
+    varying vec3 vNormal;
+    uniform float uTime;
+    uniform vec3 uColor;
+    
+    void main() {
+        float intensity = pow(0.7 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 3.0);
+        vec3 glow = uColor * intensity;
+        
+        float pulse = (sin(uTime * 2.0) * 0.5 + 0.5) * 0.2;
+        glow += uColor * pulse * intensity;
+        
+        gl_FragColor = vec4(glow, intensity + 0.1);
+    }
+`;
+
+const material = new THREE.ShaderMaterial({
+    vertexShader,
+    fragmentShader,
+    uniforms: {
+        uTime: { value: 0 },
+        uColor: { value: new THREE.Color(0x6366F1) }
+    },
+    transparent: true,
+    side: THREE.DoubleSide
+});
+
+const orb = new THREE.Mesh(geometry, material);
+scene.add(orb);
+
+const coreGeom = new THREE.SphereGeometry(0.6, 64, 64);
+const coreMat = new THREE.MeshPhongMaterial({
+    color: 0x6366F1,
+    emissive: 0x6366F1,
+    emissiveIntensity: 2.0,
+    transparent: true,
+    opacity: 0.8
+});
+const core = new THREE.Mesh(coreGeom, coreMat);
+scene.add(core);
+
+const pointLight = new THREE.PointLight(0x6366F1, 2, 10);
+pointLight.position.set(2, 2, 2);
+scene.add(pointLight);
+
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
+scene.add(ambientLight);
+
+let mouseX = 0;
+let mouseY = 0;
+
+window.addEventListener('mousemove', (e) => {
+    mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+    mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+});
+
+function animate() {
+    requestAnimationFrame(animate);
+    const time = performance.now() * 0.001;
+    
+    material.uniforms.uTime.value = time;
+    
+    orb.rotation.y = time * 0.2;
+    orb.rotation.x = time * 0.1;
+    
+    orb.position.x += (mouseX * 0.2 - orb.position.x) * 0.05;
+    orb.position.y += (mouseY * 0.2 - orb.position.y) * 0.05;
+    
+    core.scale.setScalar(1 + Math.sin(time * 2.0) * 0.05);
+    
+    renderer.render(scene, camera);
+}
+
+window.addEventListener('resize', () => {
+    const w = container.clientWidth || window.innerWidth;
+    const h = container.clientHeight || window.innerHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+});
+
+animate();
+})();
+</script>
+</div>
+<!-- STITCH_THREEJS_END:ANIMATION_3 -->
+</div>
+</div>
+</section>
+<!-- SECTION 2: Text Reveal & Context Cards -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop">
+<div class="max-w-3xl mx-auto text-center mb-24 reveal-on-scroll">
+<h2 class="font-headline-xl text-headline-xl md:text-5xl leading-tight text-reveal">
+                    Have you ever wished you could be present in multiple conversations at the same time?
+                </h2>
+</div>
+<div class="max-w-container-max mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-gutter">
+<div class="glass-card p-8 rounded-2xl text-center group reveal-on-scroll">
+<span class="material-symbols-outlined text-4xl mb-4 text-[#6366F1] transition-transform group-hover:scale-110">work</span>
+<p class="font-label-md text-label-md">Busy at work</p>
+</div>
+<div class="glass-card p-8 rounded-2xl text-center group reveal-on-scroll" style="transition-delay: 100ms;">
+<span class="material-symbols-outlined text-4xl mb-4 text-[#6366F1] transition-transform group-hover:scale-110">directions_car</span>
+<p class="font-label-md text-label-md">Driving</p>
+</div>
+<div class="glass-card p-8 rounded-2xl text-center group reveal-on-scroll" style="transition-delay: 200ms;">
+<span class="material-symbols-outlined text-4xl mb-4 text-[#6366F1] transition-transform group-hover:scale-110">school</span>
+<p class="font-label-md text-label-md">Studying</p>
+</div>
+<div class="glass-card p-8 rounded-2xl text-center group reveal-on-scroll" style="transition-delay: 300ms;">
+<span class="material-symbols-outlined text-4xl mb-4 text-[#6366F1] transition-transform group-hover:scale-110">bedtime</span>
+<p class="font-label-md text-label-md">Sleeping</p>
+</div>
+<div class="glass-card p-8 rounded-2xl text-center group reveal-on-scroll" style="transition-delay: 400ms;">
+<span class="material-symbols-outlined text-4xl mb-4 text-[#6366F1] transition-transform group-hover:scale-110">flight</span>
+<p class="font-label-md text-label-md">Traveling</p>
+</div>
+<div class="glass-card p-8 rounded-2xl text-center group reveal-on-scroll" style="transition-delay: 500ms;">
+<span class="material-symbols-outlined text-4xl mb-4 text-[#6366F1] transition-transform group-hover:scale-110">battery_alert</span>
+<p class="font-label-md text-label-md">Social burnout</p>
+</div>
+</div>
+</section>
+<!-- SECTION 3: The Transformation -->
+<section class="py-section-gap relative overflow-hidden">
+<div class="max-w-container-max mx-auto px-margin-desktop text-center">
+<div class="reveal-on-scroll">
+<h2 class="font-display-lg text-display-lg mb-8">So here comes <span class="text-[#6366F1]">Dopel.</span></h2>
+<div class="flex items-center justify-center gap-8 mb-12 text-3xl md:text-5xl font-bold">
+<span class="text-white opacity-50">You</span>
+<span class="material-symbols-outlined text-[#6366F1]">arrow_forward</span>
+<span class="text-[#6366F1] primary-glow-text">Digital You</span>
+</div>
+<p class="max-w-2xl mx-auto font-body-lg text-body-lg text-on-surface-variant">
+                        Instead of replacing you... Dopel becomes an extension of you. A living, breathing digital twin that knows your nuances, your jokes, and your rhythm.
+                    </p>
+</div>
+</div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#6366F1]/5 blur-[120px] rounded-full -z-10"></div>
+</section>
+<!-- SECTION 4: Features -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop">
+<div class="max-w-container-max mx-auto">
+<div class="text-center mb-16 reveal-on-scroll">
+<h2 class="font-headline-xl text-headline-xl mb-4">Neural Architecture</h2>
+<p class="text-on-surface-variant">Engineered to mimic the complexity of human communication.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<div class="glass-card p-10 rounded-3xl reveal-on-scroll">
+<div class="w-14 h-14 bg-[#6366F1]/10 rounded-xl flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-[#6366F1] text-3xl">psychology</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg mb-4 text-white">Personality Learning</h3>
+<p class="text-on-surface-variant">Sophisticated LLM fine-tuning based on your historical conversational patterns.</p>
+</div>
+<div class="glass-card p-10 rounded-3xl reveal-on-scroll" style="transition-delay: 100ms;">
+<div class="w-14 h-14 bg-[#6366F1]/10 rounded-xl flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-[#6366F1] text-3xl">sentiment_very_satisfied</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg mb-4 text-white">Humor Learning</h3>
+<p class="text-on-surface-variant">Dopel understands your sarcasm, your wit, and your specific sense of humor.</p>
+</div>
+<div class="glass-card p-10 rounded-3xl reveal-on-scroll" style="transition-delay: 200ms;">
+<div class="w-14 h-14 bg-[#6366F1]/10 rounded-xl flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-[#6366F1] text-3xl">translate</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg mb-4 text-white">Slang Learning</h3>
+<p class="text-on-surface-variant">From Gen Z lingo to professional jargon, Dopel adapts to your vocabulary.</p>
+</div>
+<div class="glass-card p-10 rounded-3xl reveal-on-scroll" style="transition-delay: 300ms;">
+<div class="w-14 h-14 bg-[#6366F1]/10 rounded-xl flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-[#6366F1] text-3xl">analytics</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg mb-4 text-white">Texting Rhythm</h3>
+<p class="text-on-surface-variant">Maintains your unique pause intervals, double-texts, and response speeds.</p>
+</div>
+<div class="glass-card p-10 rounded-3xl reveal-on-scroll" style="transition-delay: 400ms;">
+<div class="w-14 h-14 bg-[#6366F1]/10 rounded-xl flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-[#6366F1] text-3xl">mood</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg mb-4 text-white">Emojis</h3>
+<p class="text-on-surface-variant">Learns which emojis you over-use and where you naturally place them. ✨</p>
+</div>
+<div class="glass-card p-10 rounded-3xl reveal-on-scroll" style="transition-delay: 500ms;">
+<div class="w-14 h-14 bg-[#6366F1]/10 rounded-xl flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-[#6366F1] text-3xl">straighten</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg mb-4 text-white">Sentence Length</h3>
+<p class="text-on-surface-variant">Whether you're a one-word texter or a novel writer, Dopel mirrors you.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 5: Timeline -->
+<section class="py-section-gap bg-surface-container-lowest/50">
+<div class="max-w-container-max mx-auto px-margin-desktop">
+<div class="mb-20 text-center reveal-on-scroll">
+<h2 class="font-headline-xl text-headline-xl">How to Dopel</h2>
+<p class="text-on-surface-variant">Five steps to digital omnipresence.</p>
+</div>
+<div class="relative max-w-4xl mx-auto">
+<div class="absolute left-1/2 top-0 bottom-0 w-[1px] bg-white/10 -translate-x-1/2 hidden md:block"></div>
+<div class="space-y-16">
+<div class="relative flex flex-col md:flex-row items-center gap-8 reveal-on-scroll">
+<div class="md:w-1/2 text-right hidden md:block">
+<h4 class="font-headline-lg text-[#6366F1]">Phase 01</h4>
+</div>
+<div class="w-12 h-12 bg-[#6366F1] rounded-full z-10 flex items-center justify-center font-bold border-4 border-[#09090B]">1</div>
+<div class="md:w-1/2 glass-card p-6 rounded-2xl">
+<h3 class="font-bold mb-2">Upload WhatsApp chats</h3>
+<p class="text-sm text-on-surface-variant">Securely export and upload your message history to our training engine.</p>
+</div>
+</div>
+<div class="relative flex flex-col md:flex-row-reverse items-center gap-8 reveal-on-scroll">
+<div class="md:w-1/2 text-left hidden md:block">
+<h4 class="font-headline-lg text-[#6366F1]">Phase 02</h4>
+</div>
+<div class="w-12 h-12 bg-[#6366F1] rounded-full z-10 flex items-center justify-center font-bold border-4 border-[#09090B]">2</div>
+<div class="md:w-1/2 glass-card p-6 rounded-2xl">
+<h3 class="font-bold mb-2">Dopel learns personality</h3>
+<p class="text-sm text-on-surface-variant">Our models process thousands of context points to build your semantic profile.</p>
+</div>
+</div>
+<div class="relative flex flex-col md:flex-row items-center gap-8 reveal-on-scroll">
+<div class="md:w-1/2 text-right hidden md:block">
+<h4 class="font-headline-lg text-[#6366F1]">Phase 03</h4>
+</div>
+<div class="w-12 h-12 bg-[#6366F1] rounded-full z-10 flex items-center justify-center font-bold border-4 border-[#09090B]">3</div>
+<div class="md:w-1/2 glass-card p-6 rounded-2xl">
+<h3 class="font-bold mb-2">Choose AI mode</h3>
+<p class="text-sm text-on-surface-variant">Select between Free Quick mode or memory-powered Smart mode.</p>
+</div>
+</div>
+<div class="relative flex flex-col md:flex-row-reverse items-center gap-8 reveal-on-scroll">
+<div class="md:w-1/2 text-left hidden md:block">
+<h4 class="font-headline-lg text-[#6366F1]">Phase 04</h4>
+</div>
+<div class="w-12 h-12 bg-[#6366F1] rounded-full z-10 flex items-center justify-center font-bold border-4 border-[#09090B]">4</div>
+<div class="md:w-1/2 glass-card p-6 rounded-2xl">
+<h3 class="font-bold mb-2">Talk to your Digital You</h3>
+<p class="text-sm text-on-surface-variant">Test and refine your Dopel before deploying it to actual conversations.</p>
+</div>
+</div>
+<div class="relative flex flex-col md:flex-row items-center gap-8 reveal-on-scroll">
+<div class="md:w-1/2 text-right hidden md:block">
+<h4 class="font-headline-lg text-[#6366F1]">Phase 05</h4>
+</div>
+<div class="w-12 h-12 bg-[#6366F1] rounded-full z-10 flex items-center justify-center font-bold border-4 border-[#09090B]">5</div>
+<div class="md:w-1/2 glass-card p-6 rounded-2xl">
+<h3 class="font-bold mb-2">Deploy conversations</h3>
+<p class="text-sm text-on-surface-variant">Activate Dopel whenever you're away. It handles the chat, you keep the focus.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 6: Pricing -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop">
+<div class="max-w-container-max mx-auto">
+<div class="text-center mb-16 reveal-on-scroll">
+<h2 class="font-headline-xl text-headline-xl">Simple Pricing</h2>
+<p class="text-on-surface-variant">Choose your digital depth.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+<div class="glass-card p-12 rounded-3xl reveal-on-scroll">
+<h3 class="text-2xl font-bold mb-2">Quick Mode</h3>
+<div class="flex items-baseline gap-2 mb-6">
+<span class="text-4xl font-bold text-white">Free</span>
+<span class="text-on-surface-variant">Forever</span>
+</div>
+<p class="text-on-surface-variant mb-8">Perfect for basic mimicry and short responses.</p>
+<ul class="space-y-4 mb-10">
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-green-500">check_circle</span> Instant training</li>
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-green-500">check_circle</span> Basic slang detection</li>
+<li class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined opacity-30">cancel</span> No memory</li>
+</ul>
+<button onclick="openAuthModal('quick')" class="js-get-started w-full py-4 glass-card border border-white/10 rounded-xl hover:bg-white/5 font-bold transition-all">Get Started</button>
+</div>
+<div class="glass-card p-12 rounded-3xl border-2 border-[#6366F1]/50 relative reveal-on-scroll" style="transition-delay: 100ms;">
+<div class="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-[#6366F1] text-white text-xs font-bold rounded-full uppercase tracking-widest">Recommended</div>
+<h3 class="text-2xl font-bold mb-2">Smart Mode</h3>
+<div class="flex items-baseline gap-2 mb-6">
+<span class="text-4xl font-bold text-white">Free</span>
+<span class="text-on-surface-variant">Forever</span>
+</div>
+<p class="text-on-surface-variant mb-8">Deep context awareness and long-term conversation memory.</p>
+<ul class="space-y-4 mb-10">
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-green-500">check_circle</span> Context-aware replies</li>
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-green-500">check_circle</span> Long-term memory</li>
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-green-500">check_circle</span> Full slang &amp; humor mimicry</li>
+</ul>
+<button onclick="openAuthModal('smart')" class="js-get-started w-full py-4 bg-[#6366F1] text-white rounded-xl font-bold transition-all primary-glow hover:scale-105">Upgrade Now</button>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 7: Security -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop bg-surface-container-lowest">
+<div class="max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="glass-card p-10 rounded-3xl reveal-on-scroll">
+<span class="material-symbols-outlined text-[#6366F1] text-4xl mb-6">lock</span>
+<h3 class="font-bold text-xl mb-3">E2E Encrypted</h3>
+<p class="text-on-surface-variant text-sm">Your chat history is encrypted during transit and at rest. We never sell your data.</p>
+</div>
+<div class="glass-card p-10 rounded-3xl reveal-on-scroll" style="transition-delay: 100ms;">
+<span class="material-symbols-outlined text-[#6366F1] text-4xl mb-6">shield</span>
+<h3 class="font-bold text-xl mb-3">Privacy First</h3>
+<p class="text-on-surface-variant text-sm">Data is processed in isolated sandboxes and wiped after training if requested.</p>
+</div>
+<div class="glass-card p-10 rounded-3xl reveal-on-scroll" style="transition-delay: 200ms;">
+<span class="material-symbols-outlined text-[#6366F1] text-4xl mb-6">verified_user</span>
+<h3 class="font-bold text-xl mb-3">GDPR Compliant</h3>
+<p class="text-on-surface-variant text-sm">Full control over your digital identity. Export or delete your model anytime.</p>
+</div>
+</div>
+</section>
+<!-- SECTION 8: FAQ -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop">
+<div class="max-w-2xl mx-auto">
+<h2 class="font-headline-xl text-headline-xl text-center mb-16 reveal-on-scroll">Frequently Asked Questions</h2>
+<div class="space-y-4">
+<details class="glass-card rounded-2xl reveal-on-scroll group">
+<summary class="p-6 cursor-pointer font-bold list-none flex justify-between items-center">
+                            Is it safe to upload my chats?
+                            <span class="material-symbols-outlined transition-transform group-open:rotate-180">expand_more</span>
+</summary>
+<div class="px-6 pb-6 text-on-surface-variant text-sm border-t border-white/5 pt-4">
+                            Yes. We use enterprise-grade encryption and individual training environments. Your identity is your own.
+                        </div>
+</details>
+<details class="glass-card rounded-2xl reveal-on-scroll group">
+<summary class="p-6 cursor-pointer font-bold list-none flex justify-between items-center">
+                            Can people tell it's an AI?
+                            <span class="material-symbols-outlined transition-transform group-open:rotate-180">expand_more</span>
+</summary>
+<div class="px-6 pb-6 text-on-surface-variant text-sm border-t border-white/5 pt-4">
+                            Dopel is designed to be indistinguishable. However, we recommend being transparent with your frequent contacts.
+                        </div>
+</details>
+<details class="glass-card rounded-2xl reveal-on-scroll group">
+<summary class="p-6 cursor-pointer font-bold list-none flex justify-between items-center">
+                            Does it work with WhatsApp?
+                            <span class="material-symbols-outlined transition-transform group-open:rotate-180">expand_more</span>
+</summary>
+<div class="px-6 pb-6 text-on-surface-variant text-sm border-t border-white/5 pt-4">
+                            Yes, Dopel currently supports WhatsApp, iMessage, and Telegram through secure desktop integrations.
+                        </div>
+</details>
+</div>
+</div>
+</section>
+<!-- SECTION 9: Massive CTA -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop">
+<div class="max-w-container-max mx-auto glass-card rounded-[3rem] py-32 px-8 text-center relative overflow-hidden reveal-on-scroll">
+<div class="absolute inset-0 bg-[#6366F1]/5 -z-10"></div>
+<h2 class="font-display-lg text-display-lg-mobile md:text-display-lg mb-8">Ready to clone yourself?</h2>
+<p class="max-w-xl mx-auto font-body-lg text-body-lg text-on-surface-variant mb-12">
+                    Join over 50,000+ people who are reclaiming their time without losing their presence.
+                </p>
+<div class="flex justify-center">
+<button class="px-12 py-5 bg-[#6366F1] text-white rounded-2xl font-bold text-xl primary-glow hover:scale-105 active:scale-95 transition-all">
+                        Create Your Dopel Now
+                    </button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest dark:bg-surface-container-lowest border-t border-outline-variant/20 w-full py-section-gap">
+<div class="max-w-container-max mx-auto px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="font-headline-xl text-headline-xl text-primary font-bold tracking-tighter">Dopel</div>
+<div class="flex gap-gutter font-label-md text-label-md text-secondary">
+<a class="text-on-surface-variant hover:text-primary transition-opacity" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant hover:text-primary transition-opacity" href="#">Terms of Service</a>
+<a class="text-on-surface-variant hover:text-primary transition-opacity" href="#">API Docs</a>
+<a class="text-on-surface-variant hover:text-primary transition-opacity" href="#">Status</a>
+</div>
+<div class="font-label-md text-label-md text-secondary opacity-60">
+                © 2024 Dopel AI. Engineered for the future.
+            </div>
+</div>
+</footer>
+<script>
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+
+        window.addEventListener('scroll', () => {
+            const reveals = document.querySelectorAll('.text-reveal');
+            reveals.forEach(reveal => {
+                const windowHeight = window.innerHeight;
+                const revealTop = reveal.getBoundingClientRect().top;
+                const revealPoint = 150;
+
+                if (revealTop < windowHeight - revealPoint) {
+                    reveal.style.backgroundPosition = '0% center';
+                } else {
+                    reveal.style.backgroundPosition = '200% center';
+                }
+            });
+        });
+    </script>
+
+
+<!-- AUTH MODAL (signup + OTP verification / login) -->
+<div id="authModalOverlay" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/70 backdrop-blur-sm px-4">
+<div class="glass-card w-full max-w-md rounded-2xl p-8 relative" style="background: rgba(19,19,21,0.97);">
+<button onclick="closeAuthModal()" aria-label="Close" class="absolute top-5 right-5 text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+
+<div class="font-headline-lg text-headline-lg font-bold tracking-tighter text-on-surface mb-1" id="authTitle">Create your account</div>
+<p class="text-on-surface-variant text-body-md mb-6" id="authSubtitle">One account, then pick Quick or Smart Mode next.</p>
+
+<div id="authError" class="hidden mb-4 text-sm px-4 py-3 rounded-lg bg-[#93000a]/20 text-[#ffb4ab] border border-[#93000a]/40"></div>
+
+<!-- STEP A: credentials (signup or login) -->
+<div id="credentialsStep">
+<form id="authForm" onsubmit="return handleAuthSubmit(event)" class="flex flex-col gap-4">
+<div id="signupNameWrapper">
+<label class="block text-label-sm text-on-surface-variant mb-1.5" for="authName">Your name (exactly as it appears in your WhatsApp chat exports)</label>
+<input id="authName" type="text" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-on-surface placeholder:text-on-surface-variant/60 focus:outline-none focus:border-[#6366F1] transition-colors" placeholder="e.g. Satyam Raj"/>
+</div>
+<div>
+<label class="block text-label-sm text-on-surface-variant mb-1.5" for="authEmail">Email</label>
+<input id="authEmail" type="email" required class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-on-surface placeholder:text-on-surface-variant/60 focus:outline-none focus:border-[#6366F1] transition-colors" placeholder="you@example.com"/>
+</div>
+<div>
+<label class="block text-label-sm text-on-surface-variant mb-1.5" for="authPassword">Password</label>
+<input id="authPassword" type="password" required minlength="8" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-on-surface placeholder:text-on-surface-variant/60 focus:outline-none focus:border-[#6366F1] transition-colors" placeholder="At least 8 characters"/>
+</div>
+<button type="submit" id="authSubmitBtn" class="w-full py-3.5 bg-[#6366F1] text-white rounded-xl font-bold primary-glow hover:opacity-90 active:scale-95 transition-all">Create account</button>
+</form>
+
+<p class="text-center text-sm text-on-surface-variant mt-5">
+<span id="authToggleText">Already have an account?</span>
+<button onclick="toggleAuthMode()" class="text-primary font-semibold hover:underline">
+<span id="authToggleAction">Log in</span>
+</button>
+</p>
+</div>
+
+<!-- STEP B: OTP verification (signup only) -->
+<div id="otpStep" class="hidden flex-col gap-4">
+<p class="text-sm text-on-surface-variant -mt-2 mb-2">Enter the 6-digit code sent to <span id="otpEmailDisplay" class="text-on-surface font-semibold"></span>.</p>
+<form id="otpForm" onsubmit="return handleOtpSubmit(event)" class="flex flex-col gap-4">
+<input id="otpCode" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" required
+    style="letter-spacing:0.5em;text-align:center;font-size:1.5rem;font-weight:700;"
+    class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-on-surface focus:outline-none focus:border-[#6366F1] transition-colors" placeholder="------"/>
+<button type="submit" id="otpSubmitBtn" class="w-full py-3.5 bg-[#6366F1] text-white rounded-xl font-bold primary-glow hover:opacity-90 active:scale-95 transition-all">Verify code</button>
+</form>
+<div class="flex justify-between text-sm mt-1">
+<button onclick="backToCredentials()" class="text-on-surface-variant hover:text-on-surface transition-colors">← Back</button>
+<button onclick="resendOtp()" id="resendBtn" class="text-primary font-semibold hover:underline">Resend code</button>
+</div>
+</div>
+
+</div>
+</div>
+
+<script src="shared.js"></script>
+<script>
+    let authMode = 'signup'; // or 'login'
+    let selectedPlanBeforeAuth = null;
+    let pendingSignup = null; // { name, email, password } — memory-only, used to resend the OTP
+
+    function openAuthModal(preselectedPlan) {
+        selectedPlanBeforeAuth = preselectedPlan || null;
+        if (getToken()) {
+            window.location.href = selectedPlanBeforeAuth
+                ? `train.html?plan=${selectedPlanBeforeAuth}`
+                : "plans.html";
+            return;
+        }
+        setAuthMode('signup');
+        showCredentialsStep();
+        const overlay = document.getElementById('authModalOverlay');
+        overlay.classList.remove('hidden');
+        overlay.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeAuthModal() {
+        const overlay = document.getElementById('authModalOverlay');
+        overlay.classList.add('hidden');
+        overlay.classList.remove('flex');
+        document.body.style.overflow = '';
+    }
+
+    function toggleAuthMode() {
+        setAuthMode(authMode === 'signup' ? 'login' : 'signup');
+    }
+
+    function setAuthMode(mode) {
+        authMode = mode;
+        const isLogin = mode === 'login';
+        document.getElementById('authTitle').textContent = isLogin ? 'Welcome back' : 'Create your account';
+        document.getElementById('authSubtitle').textContent = isLogin
+            ? 'Log in to keep talking to your Dopel.'
+            : 'One account, then pick Quick or Smart Mode next.';
+        document.getElementById('signupNameWrapper').classList.toggle('hidden', isLogin);
+        document.getElementById('authName').required = !isLogin;
+        document.getElementById('authSubmitBtn').textContent = isLogin ? 'Log in' : 'Create account';
+        document.getElementById('authToggleText').textContent = isLogin ? "Don't have an account?" : 'Already have an account?';
+        document.getElementById('authToggleAction').textContent = isLogin ? 'Sign up' : 'Log in';
+        hideAuthError();
+    }
+
+    // ---- step switching within the modal (credentials <-> OTP) ----
+    function showCredentialsStep() {
+        document.getElementById('credentialsStep').classList.remove('hidden');
+        document.getElementById('credentialsStep').classList.add('flex', 'flex-col');
+        document.getElementById('otpStep').classList.add('hidden');
+        document.getElementById('otpStep').classList.remove('flex');
+    }
+
+    function showOtpStep(email) {
+        document.getElementById('authTitle').textContent = 'Check your email';
+        document.getElementById('authSubtitle').textContent = 'Almost there — one more step.';
+        document.getElementById('otpEmailDisplay').textContent = email;
+        document.getElementById('credentialsStep').classList.add('hidden');
+        document.getElementById('credentialsStep').classList.remove('flex', 'flex-col');
+        document.getElementById('otpStep').classList.remove('hidden');
+        document.getElementById('otpStep').classList.add('flex', 'flex-col');
+        document.getElementById('otpCode').value = '';
+        document.getElementById('otpCode').focus();
+        hideAuthError();
+    }
+
+    function backToCredentials() {
+        setAuthMode('signup');
+        showCredentialsStep();
+    }
+
+    function showAuthError(msg) {
+        const el = document.getElementById('authError');
+        el.textContent = msg;
+        el.classList.remove('hidden');
+    }
+    function hideAuthError() {
+        const el = document.getElementById('authError');
+        el.classList.add('hidden');
+        el.textContent = '';
+    }
+
+    // ---- step A: signup or login ----
+    async function handleAuthSubmit(event) {
+        event.preventDefault();
+        hideAuthError();
+
+        const email = document.getElementById('authEmail').value.trim();
+        const password = document.getElementById('authPassword').value;
+        const name = document.getElementById('authName').value.trim();
+
+        const endpoint = authMode === 'signup' ? '/auth/signup' : '/auth/login';
+        const body = authMode === 'signup' ? { name, email, password } : { email, password };
+
+        const submitBtn = document.getElementById('authSubmitBtn');
+        submitBtn.disabled = true;
+        submitBtn.textContent = authMode === 'signup' ? 'Sending code…' : 'Logging in…';
+
+        try {
+            const res = await fetch(`${API_BASE}${endpoint}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body),
+            });
+            const data = await res.json().catch(() => ({}));
+
+            if (!res.ok) {
+                showAuthError(data.detail || 'Something went wrong. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = authMode === 'signup' ? 'Create account' : 'Log in';
+                return false;
+            }
+
+            if (authMode === 'signup') {
+                pendingSignup = { name, email, password };
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Create account';
+                showOtpStep(email);
+            } else {
+                saveSession(data);
+                window.location.href = selectedPlanBeforeAuth
+                    ? `train.html?plan=${selectedPlanBeforeAuth}`
+                    : "plans.html";
+            }
+        } catch (err) {
+            showAuthError('Could not reach the server. Is the backend running?');
+            submitBtn.disabled = false;
+            submitBtn.textContent = authMode === 'signup' ? 'Create account' : 'Log in';
+        }
+        return false;
+    }
+
+    // ---- step B: OTP verification ----
+    async function handleOtpSubmit(event) {
+        event.preventDefault();
+        hideAuthError();
+
+        const otp = document.getElementById('otpCode').value.trim();
+        const email = pendingSignup ? pendingSignup.email : document.getElementById('otpEmailDisplay').textContent;
+
+        const submitBtn = document.getElementById('otpSubmitBtn');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Verifying…';
+
+        try {
+            const res = await fetch(`${API_BASE}/auth/verify-otp`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, otp }),
+            });
+            const data = await res.json().catch(() => ({}));
+
+            if (!res.ok) {
+                showAuthError(data.detail || 'Incorrect or expired code.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Verify code';
+                return false;
+            }
+
+            pendingSignup = null;
+            saveSession(data);
+            window.location.href = selectedPlanBeforeAuth
+                ? `train.html?plan=${selectedPlanBeforeAuth}`
+                : "plans.html";
+        } catch (err) {
+            showAuthError('Could not reach the server.');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Verify code';
+        }
+        return false;
+    }
+
+    async function resendOtp() {
+        if (!pendingSignup) {
+            showAuthError('Session info lost — go back and sign up again.');
+            return;
+        }
+        hideAuthError();
+        const resendBtn = document.getElementById('resendBtn');
+        resendBtn.disabled = true;
+        resendBtn.textContent = 'Sending…';
+
+        try {
+            const res = await fetch(`${API_BASE}/auth/signup`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(pendingSignup),
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) {
+                showAuthError(data.detail || 'Could not resend the code.');
+            }
+        } catch (err) {
+            showAuthError('Could not reach the server.');
+        } finally {
+            resendBtn.disabled = false;
+            resendBtn.textContent = 'Resend code';
+        }
+    }
+
+    (function () {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('login') === '1') {
+            setAuthMode('login');
+            openAuthModal();
+            if (params.get('expired') === '1') {
+                setTimeout(() => showAuthError('Your session expired — please log in again.'), 50);
+            }
+        }
+    })();
+
+    document.getElementById('authModalOverlay').addEventListener('click', (e) => {
+        if (e.target.id === 'authModalOverlay') closeAuthModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeAuthModal();
+    });
+</script>
+</body></html>

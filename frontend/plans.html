@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Choose your plan — Dopel</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+    body { background-color: #09090B; color: #e5e1e4; font-family: 'Inter', sans-serif; }
+    .glass-card {
+        background: rgba(17, 17, 17, 0.8);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease-out;
+    }
+    .glass-card:hover {
+        border-color: rgba(99, 102, 241, 0.4);
+        transform: translateY(-4px);
+        box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.2);
+    }
+</style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center px-6 py-16">
+
+<div class="text-center mb-12">
+    <div class="text-2xl font-bold tracking-tighter mb-2">Dopel</div>
+    <h1 class="text-4xl font-extrabold tracking-tight mb-3">Hey <span id="welcomeName" class="text-[#6366F1]"></span>, pick your mode</h1>
+    <p class="text-white/60">Both modes learn from your real WhatsApp exports. You can train the other one later too.</p>
+</div>
+
+<div class="grid md:grid-cols-2 gap-6 max-w-3xl w-full">
+
+    <div class="glass-card rounded-2xl p-8 flex flex-col">
+        <h3 class="text-2xl font-bold mb-2">Quick Mode</h3>
+        <p class="text-white/60 text-sm mb-6 flex-1">Instant, lightweight replies based on your past texts. Fully local — trains in seconds, no external API involved.</p>
+        <ul class="text-sm text-white/70 mb-8 space-y-2">
+            <li>✓ Fastest to set up</li>
+            <li>✓ Works fully offline once trained</li>
+            <li>✓ Best for simple, short-reply styles</li>
+        </ul>
+        <button onclick="choosePlan('quick')" class="w-full py-4 border border-white/10 rounded-xl hover:bg-white/5 font-bold transition-all">Continue with Quick Mode</button>
+    </div>
+
+    <div class="glass-card rounded-2xl p-8 flex flex-col" style="border-color: rgba(99,102,241,0.4);">
+        <h3 class="text-2xl font-bold mb-2">Smart Mode</h3>
+        <p class="text-white/60 text-sm mb-6 flex-1">Deep, context-aware replies generated fresh each time, grounded in real examples of how you've actually replied before.</p>
+        <ul class="text-sm text-white/70 mb-8 space-y-2">
+            <li>✓ Understands nuance and context</li>
+            <li>✓ Generates natural, varied replies</li>
+            <li>✓ Best for closer, longer conversations</li>
+        </ul>
+        <button onclick="choosePlan('smart')" class="w-full py-4 bg-[#6366F1] text-white rounded-xl font-bold transition-all hover:opacity-90">Continue with Smart Mode</button>
+    </div>
+
+</div>
+
+<button onclick="logout()" class="mt-10 text-sm text-white/40 hover:text-white/70 transition-colors">Log out</button>
+
+<script src="shared.js"></script>
+<script>
+    if (!requireAuth()) {
+        // requireAuth() already redirected; stop running this page's script.
+        throw new Error("Not authenticated");
+    }
+    document.getElementById('welcomeName').textContent = getUserName();
+
+    function choosePlan(plan) {
+        window.location.href = `train.html?plan=${plan}`;
+    }
+
+    function logout() {
+        clearSession();
+        window.location.href = "index.html";
+    }
+</script>
+</body>
+</html>
