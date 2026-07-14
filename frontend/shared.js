@@ -1,6 +1,6 @@
 // Shared across index.html, plans.html, train.html.
-// Change this to your deployed backend URL when you go live.
-const API_BASE = "http://localhost:8000/api";
+// Override via frontend/config.js or by setting window.DOPL_CONFIG.API_BASE.
+const API_BASE = (window.DOPL_CONFIG && window.DOPL_CONFIG.API_BASE) || "http://localhost:8000/api";
 
 function saveSession(data) {
     localStorage.setItem("dopel_token", data.access_token);
