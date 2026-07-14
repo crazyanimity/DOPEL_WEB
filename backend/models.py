@@ -37,6 +37,7 @@ class Persona(Base):
     artifact_path = Column(String, nullable=True)  # folder under storage/ holding the model files
     contacts = Column(Text, nullable=True)  # JSON list of contact names this persona was trained on
     error_message = Column(Text, nullable=True)
+    share_token = Column(String, unique=True, nullable=True, index=True)
     updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc),
                          onupdate=lambda: datetime.now(timezone.utc))
 

@@ -39,7 +39,6 @@ class PersonaStatusResponse(BaseModel):
     pairs_trained: int
     contacts: list[str] = []
     error_message: str | None = None
-from pydantic import BaseModel
 
 
 class SignupInitResponse(BaseModel):
