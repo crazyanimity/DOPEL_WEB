@@ -39,16 +39,6 @@ app = FastAPI(title="Dopel API")
 app.state.limiter = limiter
 
 
-@app.get("/")
-def health_root():
-    return {"status": "ok", "message": "Dopel API is running"}
-
-
-@app.get("/health")
-def health_check():
-    return {"status": "ok"}
-
-
 @app.exception_handler(RateLimitExceeded)
 async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
     # slowapi's default handler doesn't return a "detail" key, which made the frontend
@@ -316,3 +306,11 @@ def chat(
 @app.get("/api/health")
 def health():
     return {"status": "ok"}
+
+
+# ===== STARTUP: Read PORT from environment =====
+if __name__ == "__main__":
+    import uvicorn
+
+    port = int(os.getenv("PORT", "8000"))
+    uvicorn.run(app, host="0.0.0.0", port=port, reload=False)
