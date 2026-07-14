@@ -195,6 +195,8 @@ def _run_training(user_id: str, plan: str, files: list, your_name: str):
         persona.error_message = e.detail
         db.commit()
     except Exception as e:
+        import traceback
+        traceback.print_exc()  # prints full traceback to Render logs
         persona.status = "error"
         persona.error_message = "Training failed unexpectedly. Please try again."
         db.commit()
