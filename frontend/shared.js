@@ -1,6 +1,6 @@
 // Shared across index.html, plans.html, train.html.
 // Override via frontend/config.js or by setting window.DOPL_CONFIG.API_BASE.
-const API_BASE = (window.DOPL_CONFIG && window.DOPL_CONFIG.API_BASE) || "http://localhost:8000/api";
+const API_BASE = (window.DOPL_CONFIG && window.DOPL_CONFIG.API_BASE) || "https://dopel-backend.onrender.com/api";
 
 function saveSession(data) {
     localStorage.setItem("dopel_token", data.access_token);
