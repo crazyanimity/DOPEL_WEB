@@ -15,9 +15,16 @@ load_dotenv()
 from fastapi import FastAPI, Depends, HTTPException, UploadFile, File, Form, BackgroundTasks, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from slowapi.errors import RateLimitExceeded
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
+
+try:
+    from slowapi.errors import RateLimitExceeded
+except Exception:  # pragma: no cover - fallback for minimal deployments
+    class RateLimitExceeded(Exception):
+        def __init__(self, detail: str = "Rate limit exceeded"):
+            self.detail = detail
+            super().__init__(detail)
 
 from database import get_db, Base, engine
 import models
@@ -314,6 +321,16 @@ def chat(
 @app.get("/api/health")
 def health():
     return {"status": "ok"}
+
+
+@app.get("/health")
+def root_health():
+    return {"status": "ok"}
+
+
+@app.get("/")
+def root():
+    return {"message": "Dopel API is running", "status": "ok"}
 
 
 # ===== STARTUP: Read PORT from environment =====
