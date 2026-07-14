@@ -9,15 +9,14 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-if not DATABASE_URL:
-    raise RuntimeError(
-        "DATABASE_URL is not set. Copy .env.example to .env and fill in your "
-        "Postgres connection string first."
-    )
+DATABASE_URL = os.getenv("DATABASE_URL") or "sqlite:///./dopel.db"
+
+engine_kwargs = {"pool_pre_ping": True}
+if DATABASE_URL.startswith("sqlite"):
+    engine_kwargs["connect_args"] = {"check_same_thread": False}
 
 # pool_pre_ping avoids "server closed the connection" errors after idle periods.
-engine = create_engine(DATABASE_URL, pool_pre_ping=True)
+engine = create_engine(DATABASE_URL, **engine_kwargs)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
