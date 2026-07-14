@@ -1,6 +1,29 @@
 // Shared across index.html, plans.html, train.html.
 // Override via frontend/config.js or by setting window.DOPL_CONFIG.API_BASE.
-const API_BASE = (window.DOPL_CONFIG && window.DOPL_CONFIG.API_BASE) || "https://dopelweb-production.up.railway.app/api";
+window.DOPL_CONFIG = window.DOPL_CONFIG || {};
+
+// Default API base: prefer an explicit override in frontend/config.js (window.DOPL_CONFIG.API_BASE).
+// When not overridden, choose a sensible default for local dev vs production.
+const _defaultApiBase = (() => {
+    try {
+        const host = window.location && window.location.hostname;
+        const protocol = window.location && window.location.protocol;
+        if (!host) return "https://dopel-web.onrender.com/api";
+        // If running locally (localhost, 127.0.0.1) or opened via file://, point to the local backend.
+        if (host === "localhost" || host === "127.0.0.1" || protocol === "file:") {
+            return "http://127.0.0.1:8000/api";
+        }
+    } catch (e) {
+        /* fall through to production default */
+    }
+    return "https://dopel-web.onrender.com/api";
+})();
+
+window.DOPL_CONFIG.API_BASE = window.DOPL_CONFIG.API_BASE || _defaultApiBase;
+
+// Shared across index.html, plans.html, train.html.
+// Override via frontend/config.js or by setting window.DOPL_CONFIG.API_BASE.
+const API_BASE = (window.DOPL_CONFIG && window.DOPL_CONFIG.API_BASE) || _defaultApiBase;
 
 function saveSession(data) {
     localStorage.setItem("dopel_token", data.access_token);

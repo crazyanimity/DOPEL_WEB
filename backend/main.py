@@ -57,16 +57,26 @@ async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
 
 ALLOWED_ORIGINS = [o.strip() for o in os.getenv("CORS_ORIGINS", "").split(",") if o.strip()]
 if not ALLOWED_ORIGINS:
+    # Default to common localhost dev origins to avoid CORS issues when
+    # testing the frontend served on a local static server.
+    ALLOWED_ORIGINS = [
+        "http://localhost:5500",
+        "http://127.0.0.1:5500",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ]
     import warnings
     warnings.warn(
-        "CORS_ORIGINS is not set! Defaulting to localhost. "
-        "Set CORS_ORIGINS to your Vercel URL (e.g. https://your-app.vercel.app) "
-        "or the frontend won't be able to reach this API.",
+        "CORS_ORIGINS is not set. Defaulting to common localhost origins for development. "
+        "Set CORS_ORIGINS in your .env for production (e.g. your Vercel URL).",
         stacklevel=1,
     )
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS or ["http://localhost:5500"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
