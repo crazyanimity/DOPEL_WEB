@@ -5,10 +5,7 @@ import smtplib
 from email.mime.text import MIMEText
 from datetime import datetime, timedelta, timezone
 
-try:
-    import jwt
-except Exception:  # pragma: no cover - fallback for environments without PyJWT
-    jwt = None
+import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import bcrypt
@@ -17,7 +14,9 @@ from sqlalchemy.orm import Session
 from database import get_db
 from models import User
 
-JWT_SECRET = os.getenv("JWT_SECRET") or "dev-jwt-secret-change-me"
+JWT_SECRET = os.getenv("JWT_SECRET")
+if not JWT_SECRET or JWT_SECRET == "CHANGE_ME_TO_A_LONG_RANDOM_STRING":
+    raise RuntimeError("JWT_SECRET is not set (or still the placeholder). Set a real random value in .env.")
 
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRE_MINUTES = int(os.getenv("JWT_EXPIRE_MINUTES", "1440"))
@@ -41,19 +40,15 @@ def create_access_token(user_id: str) -> str:
         "exp": datetime.now(timezone.utc) + timedelta(minutes=JWT_EXPIRE_MINUTES),
         "iat": datetime.now(timezone.utc),
     }
-    if jwt is None:
-        return f"dev-token:{user_id}"
     return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
 
 def decode_access_token(token: str) -> str:
-    if jwt is None:
-        if token.startswith("dev-token:"):
-            return token.split(":", 1)[1]
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid session token.")
     try:
         payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-    except Exception:
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Session expired. Please log in again.")
+    except jwt.InvalidTokenError:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid session token.")
     return payload["sub"]
 
@@ -72,7 +67,7 @@ def get_current_user(
 
 
 # ---------------------------------------------------------------------------
-# NEW: OTP generation + email delivery for signup verification
+# OTP generation + email delivery for signup verification
 # ---------------------------------------------------------------------------
 GMAIL_ADDRESS = os.getenv("GMAIL_ADDRESS")
 GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
@@ -88,9 +83,16 @@ def otp_expiry() -> datetime:
 
 
 def send_otp_email(to_email: str, otp: str) -> None:
-    """Sends the verification code via Gmail SMTP. If GMAIL_* env vars aren't
-    set, falls back to printing it to the server console — lets you test the
-    flow locally before wiring up real SMTP credentials."""
+    """Sends the verification code via Gmail SMTP.
+
+    Uses port 587 with STARTTLS rather than port 465 with implicit SSL.
+    Several hosting platforms (Render, some Railway plans) block outbound
+    port 465 as an anti-spam measure but leave 587 open, since it's the
+    standard authenticated-submission port apps are expected to use.
+
+    If GMAIL_* env vars aren't set, falls back to printing the code to the
+    server console — lets you test the flow locally before wiring up SMTP.
+    """
     if not GMAIL_ADDRESS or not GMAIL_APP_PASSWORD:
         print(f"[DEV MODE — no email sent] OTP for {to_email}: {otp}")
         return
@@ -101,6 +103,9 @@ def send_otp_email(to_email: str, otp: str) -> None:
     msg["To"] = to_email
 
     context = ssl.create_default_context()
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+    with smtplib.SMTP("smtp.gmail.com", 587, timeout=15) as server:
+        server.ehlo()
+        server.starttls(context=context)
+        server.ehlo()
         server.login(GMAIL_ADDRESS, GMAIL_APP_PASSWORD)
         server.sendmail(GMAIL_ADDRESS, to_email, msg.as_string())
