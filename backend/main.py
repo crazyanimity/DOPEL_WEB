@@ -2,13 +2,12 @@
 Dopel backend — auth + Postgres + Quick/Smart training + chat.
 
 Run:
-    cp .env.example .env      # then fill in real values, including GMAIL_ADDRESS / GMAIL_APP_PASSWORD
+    cp .env.example .env      # then fill in real values
     pip install -r requirements.txt
     python -c "from database import Base, engine; import models; Base.metadata.create_all(engine)"
     uvicorn main:app --reload --port 8000
 """
 import os
-from datetime import datetime, timezone
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -30,12 +29,9 @@ from database import get_db, Base, engine
 import models
 from schemas import (
     SignupRequest, LoginRequest, AuthResponse, ChatRequest, TrainResponse, PersonaStatusResponse,
-    SignupInitResponse, VerifyOtpRequest, ShareTokenResponse, ShareInfoResponse, PublicChatRequest,
+    ShareTokenResponse, ShareInfoResponse, PublicChatRequest,
 )
-from auth import (
-    hash_password, verify_password, create_access_token, get_current_user,
-    generate_otp, otp_expiry, send_otp_email,
-)
+from auth import hash_password, verify_password, create_access_token, get_current_user
 from security import limiter
 import ml_engine
 import uuid
@@ -84,62 +80,24 @@ app.add_middleware(
 
 
 # ---------------------------------------------------------------------------
-# Auth — signup is now two steps: request OTP, then verify it.
+# Auth — plain single-step signup (OTP removed for now; can be reintroduced
+# later once a verified sending domain is set up — auth.py's OTP helper
+# functions and models.PendingSignup can stay in place unused in the
+# meantime, nothing needs to be torn out to bring it back).
 # ---------------------------------------------------------------------------
-@app.post("/api/auth/signup", response_model=SignupInitResponse)
+@app.post("/api/auth/signup", response_model=AuthResponse)
 @limiter.limit("5/minute")
 def signup(request: Request, body: SignupRequest, db: Session = Depends(get_db)):
-    email = body.email.lower()
-
-    existing = db.query(models.User).filter(models.User.email == email).first()
+    existing = db.query(models.User).filter(models.User.email == body.email.lower()).first()
     if existing:
         raise HTTPException(409, "An account with this email already exists.")
 
-    otp = generate_otp()
-    pending = db.query(models.PendingSignup).filter(models.PendingSignup.email == email).first()
-    if pending:
-        pending.name = body.name.strip()
-        pending.password_hash = hash_password(body.password)
-        pending.otp = otp
-        pending.expires_at = otp_expiry()
-    else:
-        pending = models.PendingSignup(
-            email=email,
-            name=body.name.strip(),
-            password_hash=hash_password(body.password),
-            otp=otp,
-            expires_at=otp_expiry(),
-        )
-        db.add(pending)
-    db.commit()
-
-    send_otp_email(email, otp)
-    return SignupInitResponse(message="Verification code sent. Check your email.")
-
-
-@app.post("/api/auth/verify-otp", response_model=AuthResponse)
-@limiter.limit("10/minute")
-def verify_otp(request: Request, body: VerifyOtpRequest, db: Session = Depends(get_db)):
-    email = body.email.lower()
-    pending = db.query(models.PendingSignup).filter(models.PendingSignup.email == email).first()
-
-    if not pending:
-        raise HTTPException(400, "No pending signup for this email — sign up again.")
-
-    expires_at = pending.expires_at
-    if expires_at.tzinfo is None:
-        expires_at = expires_at.replace(tzinfo=timezone.utc)
-    if datetime.now(timezone.utc) > expires_at:
-        db.delete(pending)
-        db.commit()
-        raise HTTPException(400, "That code expired. Sign up again for a new one.")
-
-    if body.otp.strip() != pending.otp:
-        raise HTTPException(400, "Incorrect code.")
-
-    user = models.User(name=pending.name, email=email, password_hash=pending.password_hash)
+    user = models.User(
+        name=body.name.strip(),
+        email=body.email.lower(),
+        password_hash=hash_password(body.password),
+    )
     db.add(user)
-    db.delete(pending)
     try:
         db.commit()
     except IntegrityError:
@@ -256,7 +214,7 @@ def persona_status(plan: str, db: Session = Depends(get_db), user: models.User =
 
 
 # ---------------------------------------------------------------------------
-# NEW: Share links — generate one per trained persona, then let anyone chat
+# Share links — generate one per trained persona, then let anyone chat
 # with it with no login. This is the "send it to a friend on WhatsApp" piece.
 # ---------------------------------------------------------------------------
 @app.post("/api/persona/{plan}/share", response_model=ShareTokenResponse)

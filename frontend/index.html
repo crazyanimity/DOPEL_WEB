@@ -754,7 +754,7 @@ animate();
     </script>
 
 
-<!-- AUTH MODAL (signup + OTP verification / login) -->
+<!-- AUTH MODAL (signup / login) -->
 <div id="authModalOverlay" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/70 backdrop-blur-sm px-4">
 <div class="glass-card w-full max-w-md rounded-2xl p-8 relative" style="background: rgba(19,19,21,0.97);">
 <button onclick="closeAuthModal()" aria-label="Close" class="absolute top-5 right-5 text-on-surface-variant hover:text-on-surface transition-colors">
@@ -766,8 +766,6 @@ animate();
 
 <div id="authError" class="hidden mb-4 text-sm px-4 py-3 rounded-lg bg-[#93000a]/20 text-[#ffb4ab] border border-[#93000a]/40"></div>
 
-<!-- STEP A: credentials (signup or login) -->
-<div id="credentialsStep">
 <form id="authForm" onsubmit="return handleAuthSubmit(event)" class="flex flex-col gap-4">
 <div id="signupNameWrapper">
 <label class="block text-label-sm text-on-surface-variant mb-1.5" for="authName">Your name (exactly as it appears in your WhatsApp chat exports)</label>
@@ -790,22 +788,6 @@ animate();
 <span id="authToggleAction">Log in</span>
 </button>
 </p>
-</div>
-
-<!-- STEP B: OTP verification (signup only) -->
-<div id="otpStep" class="hidden flex-col gap-4">
-<p class="text-sm text-on-surface-variant -mt-2 mb-2">Enter the 6-digit code sent to <span id="otpEmailDisplay" class="text-on-surface font-semibold"></span>.</p>
-<form id="otpForm" onsubmit="return handleOtpSubmit(event)" class="flex flex-col gap-4">
-<input id="otpCode" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" required
-    style="letter-spacing:0.5em;text-align:center;font-size:1.5rem;font-weight:700;"
-    class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-on-surface focus:outline-none focus:border-[#6366F1] transition-colors" placeholder="------"/>
-<button type="submit" id="otpSubmitBtn" class="w-full py-3.5 bg-[#6366F1] text-white rounded-xl font-bold primary-glow hover:opacity-90 active:scale-95 transition-all">Verify code</button>
-</form>
-<div class="flex justify-between text-sm mt-1">
-<button onclick="backToCredentials()" class="text-on-surface-variant hover:text-on-surface transition-colors">← Back</button>
-<button onclick="resendOtp()" id="resendBtn" class="text-primary font-semibold hover:underline">Resend code</button>
-</div>
-</div>
 
 </div>
 </div>
@@ -815,18 +797,17 @@ animate();
 <script>
     let authMode = 'signup'; // or 'login'
     let selectedPlanBeforeAuth = null;
-    let pendingSignup = null; // { name, email, password } — memory-only, used to resend the OTP
 
     function openAuthModal(preselectedPlan) {
         selectedPlanBeforeAuth = preselectedPlan || null;
         if (getToken()) {
+            // Already logged in — skip straight to the right place.
             window.location.href = selectedPlanBeforeAuth
                 ? `train.html?plan=${selectedPlanBeforeAuth}`
                 : "plans.html";
             return;
         }
         setAuthMode('signup');
-        showCredentialsStep();
         const overlay = document.getElementById('authModalOverlay');
         overlay.classList.remove('hidden');
         overlay.classList.add('flex');
@@ -859,32 +840,6 @@ animate();
         hideAuthError();
     }
 
-    // ---- step switching within the modal (credentials <-> OTP) ----
-    function showCredentialsStep() {
-        document.getElementById('credentialsStep').classList.remove('hidden');
-        document.getElementById('credentialsStep').classList.add('flex', 'flex-col');
-        document.getElementById('otpStep').classList.add('hidden');
-        document.getElementById('otpStep').classList.remove('flex');
-    }
-
-    function showOtpStep(email) {
-        document.getElementById('authTitle').textContent = 'Check your email';
-        document.getElementById('authSubtitle').textContent = 'Almost there — one more step.';
-        document.getElementById('otpEmailDisplay').textContent = email;
-        document.getElementById('credentialsStep').classList.add('hidden');
-        document.getElementById('credentialsStep').classList.remove('flex', 'flex-col');
-        document.getElementById('otpStep').classList.remove('hidden');
-        document.getElementById('otpStep').classList.add('flex', 'flex-col');
-        document.getElementById('otpCode').value = '';
-        document.getElementById('otpCode').focus();
-        hideAuthError();
-    }
-
-    function backToCredentials() {
-        setAuthMode('signup');
-        showCredentialsStep();
-    }
-
     function showAuthError(msg) {
         const el = document.getElementById('authError');
         el.textContent = msg;
@@ -896,7 +851,6 @@ animate();
         el.textContent = '';
     }
 
-    // ---- step A: signup or login ----
     async function handleAuthSubmit(event) {
         event.preventDefault();
         hideAuthError();
@@ -910,7 +864,7 @@ animate();
 
         const submitBtn = document.getElementById('authSubmitBtn');
         submitBtn.disabled = true;
-        submitBtn.textContent = authMode === 'signup' ? 'Sending code…' : 'Logging in…';
+        submitBtn.textContent = authMode === 'signup' ? 'Creating account…' : 'Logging in…';
 
         try {
             const res = await fetch(`${API_BASE}${endpoint}`, {
@@ -927,17 +881,11 @@ animate();
                 return false;
             }
 
-            if (authMode === 'signup') {
-                pendingSignup = { name, email, password };
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Create account';
-                showOtpStep(email);
-            } else {
-                saveSession(data);
-                window.location.href = selectedPlanBeforeAuth
-                    ? `train.html?plan=${selectedPlanBeforeAuth}`
-                    : "plans.html";
-            }
+            // Signup and login both return the token directly now — no OTP step.
+            saveSession(data);
+            window.location.href = selectedPlanBeforeAuth
+                ? `train.html?plan=${selectedPlanBeforeAuth}`
+                : "plans.html";
         } catch (err) {
             showAuthError('Could not reach the server. Is the backend running?');
             submitBtn.disabled = false;
@@ -946,78 +894,10 @@ animate();
         return false;
     }
 
-    // ---- step B: OTP verification ----
-    async function handleOtpSubmit(event) {
-        event.preventDefault();
-        hideAuthError();
-
-        const otp = document.getElementById('otpCode').value.trim();
-        const email = pendingSignup ? pendingSignup.email : document.getElementById('otpEmailDisplay').textContent;
-
-        const submitBtn = document.getElementById('otpSubmitBtn');
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Verifying…';
-
-        try {
-            const res = await fetch(`${API_BASE}/auth/verify-otp`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, otp }),
-            });
-            const data = await res.json().catch(() => ({}));
-
-            if (!res.ok) {
-                showAuthError(data.detail || 'Incorrect or expired code.');
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Verify code';
-                return false;
-            }
-
-            pendingSignup = null;
-            saveSession(data);
-            window.location.href = selectedPlanBeforeAuth
-                ? `train.html?plan=${selectedPlanBeforeAuth}`
-                : "plans.html";
-        } catch (err) {
-            showAuthError('Could not reach the server.');
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Verify code';
-        }
-        return false;
-    }
-
-    async function resendOtp() {
-        if (!pendingSignup) {
-            showAuthError('Session info lost — go back and sign up again.');
-            return;
-        }
-        hideAuthError();
-        const resendBtn = document.getElementById('resendBtn');
-        resendBtn.disabled = true;
-        resendBtn.textContent = 'Sending…';
-
-        try {
-            const res = await fetch(`${API_BASE}/auth/signup`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(pendingSignup),
-            });
-            const data = await res.json().catch(() => ({}));
-            if (!res.ok) {
-                showAuthError(data.detail || 'Could not resend the code.');
-            }
-        } catch (err) {
-            showAuthError('Could not reach the server.');
-        } finally {
-            resendBtn.disabled = false;
-            resendBtn.textContent = 'Resend code';
-        }
-    }
-
+    // If we got bounced here from requireAuth(), open the modal automatically.
     (function () {
         const params = new URLSearchParams(window.location.search);
         if (params.get('login') === '1') {
-            setAuthMode('login');
             openAuthModal();
             if (params.get('expired') === '1') {
                 setTimeout(() => showAuthError('Your session expired — please log in again.'), 50);
