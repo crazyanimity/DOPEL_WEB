@@ -32,7 +32,7 @@ STORAGE_ROOT = Path(__file__).parent / "storage"
 STORAGE_ROOT.mkdir(exist_ok=True)
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-GROQ_MODEL = "llama-3.3-70b-versatile"
+GROQ_MODEL = "openai/gpt-oss-120b"
 
 # ---------------------------------------------------------------------------
 # AI-disclosure guardrail. Only fires when the person directly asks —
